@@ -1,11 +1,7 @@
 package com.restapipractice.restapi.services;
 
 import java.util.List;
-import java.util.Optional;
-
-import com.restapipractice.restapi.entities.Customer;
 import com.restapipractice.restapi.dto.AddressDTO;
-import com.restapipractice.restapi.entities.Address;
 
 public interface AddressService {
 	

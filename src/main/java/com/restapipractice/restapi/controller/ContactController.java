@@ -49,7 +49,9 @@ public class ContactController {
 	public HttpStatus deleteAllContactsOfSpecificCustomer(@PathVariable int customerId){
 		this.contactService.deleteAllContactsOfSpecificCustomer(customerId);
 		return HttpStatus.OK;
-	}//TODO add delete specific contact
+	}
+	
+	
 	
 	@DeleteMapping("/customers/{customerId}/contacts/{contactId}")
 	public HttpStatus deleteSpecificContactOfSpecificCustomer(@PathVariable int customerId, @PathVariable int contactId){

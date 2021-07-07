@@ -16,7 +16,7 @@ import com.restapipractice.restapi.exception.NoDataFoundException;
 @Service
 public class CustomerServiceImplementation implements CustomerService {
 
-	private final CustomerDao customerDao; //TODO order private final
+	private final CustomerDao customerDao; 
 	private final ModelMapper modelMapper; 
 
 	public CustomerServiceImplementation(CustomerDao customerDao,ModelMapper modelMapper) {
@@ -26,39 +26,21 @@ public class CustomerServiceImplementation implements CustomerService {
 
 	@Override
 	public List<CustomerDTO> getCustomers() {
-		
-//		boolean cust = customerDao.findAll().isEmpty();
-//		if(cust) {
-//			List<Customer> customer = customerDao.findAll();
-//			// convert entity to DTO
-//			CustomerDTO customerResponse = modelMapper.map(customer, CustomerDTO.class);
-//            return customerResponse;
-//		}else {
-//			throw new NoDataFoundException();
-//		}
-		
 		List<Customer> customers = customerDao.findAll();
 		if(customers.isEmpty()) {
 			throw new NoDataFoundException();
 		}else {
-			
 			// convert entity to DTO
-			// for each customer in the list, map to customerDTO. Then create customerDTO list. And return customerDTO list
-			//CustomerDTO customerResponse = modelMapper.map(customers, CustomerDTO.class);
-			List<CustomerDTO> customerResponse = customers.stream().map(cust -> modelMapper.map(cust, CustomerDTO.class)).collect(Collectors.toList());
+			List<CustomerDTO> customerResponse = customers.stream().map(cust -> modelMapper.map(cust, CustomerDTO.class))
+					.collect(Collectors.toList());
             return customerResponse;
-			
-			
 		}
 	}
 
 	@Override
 	public CustomerDTO getCustomer(int customerId) {
-		
 		Optional<Customer> customerDb = this.customerDao.findById(customerId);
-		
 		if(customerDb.isPresent()) {
-			
 			// convert entity to DTO
 			CustomerDTO customerResponse = modelMapper.map(customerDb, CustomerDTO.class);
 			return customerResponse;
@@ -86,7 +68,6 @@ public class CustomerServiceImplementation implements CustomerService {
 		
 		// convert DTO to Entity
 		Customer customerRequest = modelMapper.map(customerDTO, Customer.class);
-
 		Optional<Customer> customerDb = this.customerDao.findById(customerRequest.getId());
 
 		if (customerDb.isPresent()) {
@@ -94,7 +75,6 @@ public class CustomerServiceImplementation implements CustomerService {
 			customerUpdate.setId(customerRequest.getId());
 			customerUpdate.setName(customerRequest.getName());
 			customerUpdate.setAge(customerRequest.getAge());
-
 			customerUpdate = customerDao.save(customerUpdate);
 			
 			// entity to DTO

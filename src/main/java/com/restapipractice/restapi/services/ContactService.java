@@ -1,8 +1,6 @@
 package com.restapipractice.restapi.services;
 
 import java.util.List;
-import java.util.Optional;
-
 import com.restapipractice.restapi.dto.ContactDTO;
 
 public interface ContactService {
@@ -15,8 +13,8 @@ public interface ContactService {
 	
 	public ContactDTO updateContact(int customerId, int contactId, ContactDTO contactDTO);
 	
-    public void deleteAllContactsOfSpecificCustomer(int customerId);
-    
+	public void deleteAllContactsOfSpecificCustomer(int customerId);
+	
     public void deleteSpecificContactOfSpecificCustomer(int customerId, int contactId);
 
 }

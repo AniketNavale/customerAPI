@@ -26,7 +26,10 @@ import javax.validation.Valid;
 public class CustomerController {
 	
 	//Logger
-	Logger logger = LoggerFactory.getLogger(CustomerController.class);
+	//Logger logger = LoggerFactory.getLogger(CustomerController.class);
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
+
 	
 	private CustomerService customerService;
 

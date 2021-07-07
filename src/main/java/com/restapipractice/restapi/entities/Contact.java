@@ -14,7 +14,7 @@ public class Contact {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int contactId;
 	
-	private int contactNumber;
+	private long contactNumber;
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
@@ -38,11 +38,11 @@ public class Contact {
 		this.contactId = contactId;
 	}
 
-	public int getContactNumber() {
+	public long getContactNumber() {
 		return contactNumber;
 	}
 
-	public void setContactNumber(int contactNumber) {
+	public void setContactNumber(long contactNumber) {
 		this.contactNumber = contactNumber;
 	}
 	

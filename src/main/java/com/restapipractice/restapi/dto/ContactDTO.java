@@ -10,6 +10,6 @@ public class ContactDTO {
 	private int contactId;
 	
 	@NotBlank(message="No null contact number allowed")
-	private int contactNumber;
+	private long contactNumber;
 
 }

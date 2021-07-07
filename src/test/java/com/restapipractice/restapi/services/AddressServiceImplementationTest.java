@@ -50,10 +50,15 @@ public class AddressServiceImplementationTest {
 	@Test
 	@DisplayName("Adding a new address in database")
 	public void test_AddAddress_addNewAddressInDatabase() {
+//		Address address = new Address(1,"Mumbai","India",400052);
+//		when(customerAddressDao.save(address)).thenReturn(address);
+//		assertEquals(address, addressService.updateAddress(1,address)); 
+//		Mockito.verify(customerAddressDao,times(1)).save(address);  
+		
 		Address address = new Address(1,"Mumbai","India",400052);
-		when(customerAddressDao.save(address)).thenReturn(address);
-		assertEquals(address, addressService.updateAddress(1,address)); 
-		Mockito.verify(customerAddressDao,times(1)).save(address);  
+		customerAddressDao.save(address);
+		ArgumentCaptor<Address> addressCaptor = ArgumentCaptor.forClass(Address.class); 
+		Mockito.verify(customerAddressDao, times(1)).save(addressCaptor.capture());
 	}
 	
 	@Test

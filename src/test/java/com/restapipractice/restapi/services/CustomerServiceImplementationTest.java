@@ -14,12 +14,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.restapipractice.restapi.dao.CustomerDao;
+import com.restapipractice.restapi.dto.CustomerDTO;
 import com.restapipractice.restapi.entities.Address;
 import com.restapipractice.restapi.entities.Customer;
 
@@ -32,6 +34,9 @@ public class CustomerServiceImplementationTest {
 	
 	@MockBean
 	private CustomerDao customerDao;
+	
+	@Autowired
+	private ModelMapper modelMapper; 
 	
 	@Test
 	@DisplayName("Fetching all customers from database")
@@ -52,10 +57,10 @@ public class CustomerServiceImplementationTest {
 	@Test
 	@DisplayName("Adding a new customer in database")
 	public void test_AddCustomer_addNewCustomerInDatabase() {
-		Customer customer = new Customer(5,"Sachin",32,new Address(1,"Mumbai","India",400052));
-		when(customerDao.save(customer)).thenReturn(customer);
-		assertEquals(customer, customerService.addCustomer(customer)); 
-		Mockito.verify(customerDao,times(1)).save(customer);  
+  		Customer customer = new Customer(5,"Sachin",32,new Address(1,"Mumbai","India",400052));
+		customerDao.save(customer);
+		ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class); 
+		Mockito.verify(customerDao, times(1)).save(customerCaptor.capture());
 	}
 	
 	@Test
@@ -84,6 +89,17 @@ public class CustomerServiceImplementationTest {
 		
 	}
 	
+	@Test
+	@DisplayName("Deleting customer from the database if it is not present")
+	public void test_DeleteCustomer_ifCustomerIsNotPresentInDatabase() {
+		Optional<Customer> customer = Optional.of(new Customer(5,"Sachin",32,new Address(1,"Mumbai","India",400052)));
+		when(customerDao.findById(5)).thenReturn(customer);
+		customerService.deleteCustomer(15); 
+		ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class);
+		Mockito.verify(customerDao, times(1)).delete(customerCaptor.capture());
+		Assertions.assertEquals("Customer not found", customerCaptor.getValue());
+	  
+	}
 	
 }
 

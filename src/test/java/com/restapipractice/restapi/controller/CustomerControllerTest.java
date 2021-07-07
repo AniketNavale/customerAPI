@@ -5,19 +5,24 @@ import static org.mockito.Mockito.times;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -25,14 +30,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restapipractice.restapi.dto.CustomerDTO;
 import com.restapipractice.restapi.entities.Customer;
 import com.restapipractice.restapi.services.CustomerService;
 
-//@RunWith(SpringRunner.class)
-//@WebMvcTest(CustomerController.class)
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+@RunWith(SpringRunner.class)
+@WebMvcTest(CustomerController.class)
+//@ExtendWith(SpringExtension.class)
+//@SpringBootTest
+//@AutoConfigureMockMvc
 public class CustomerControllerTest {
 	
 	// logging - troubleshooting logs, log rotation 
@@ -40,6 +46,9 @@ public class CustomerControllerTest {
 	// java 11 OCP certification
 	@Autowired
 	private MockMvc mockMvc;
+	
+	@Autowired
+	private ModelMapper modelMapper; 
 	
 	@MockBean
 	private CustomerService customerService;
@@ -62,7 +71,11 @@ public class CustomerControllerTest {
 		
 		String URI = "/customers";
 		
-		Mockito.when(customerService.addCustomer(Mockito.any(Customer.class))).thenReturn(mockCustomer);
+
+		// convert entity to DTO
+		CustomerDTO customerResponse = modelMapper.map(mockCustomer, CustomerDTO.class);
+		
+		Mockito.when(customerService.addCustomer(Mockito.any(CustomerDTO.class))).thenReturn(customerResponse);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(URI)
@@ -95,7 +108,10 @@ public class CustomerControllerTest {
 		
 		String URI = "/customers";
 		
-		Mockito.when(customerService.addCustomer(Mockito.any(Customer.class))).thenReturn(mockCustomer);
+		// convert entity to DTO
+		CustomerDTO customerResponse = modelMapper.map(mockCustomer, CustomerDTO.class);
+				
+		Mockito.when(customerService.addCustomer(Mockito.any(CustomerDTO.class))).thenReturn(customerResponse);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(URI)
@@ -126,7 +142,10 @@ public class CustomerControllerTest {
 		
 		String URI = "/customers";
 		
-		Mockito.when(customerService.addCustomer(Mockito.any(Customer.class))).thenReturn(mockCustomer);
+		// convert entity to DTO
+		CustomerDTO customerResponse = modelMapper.map(mockCustomer, CustomerDTO.class);
+				
+		Mockito.when(customerService.addCustomer(Mockito.any(CustomerDTO.class))).thenReturn(customerResponse);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(URI)
@@ -160,7 +179,10 @@ public class CustomerControllerTest {
 		customerList.add(mockCustomer1);
 		customerList.add(mockCustomer2);
 		
-		Mockito.when(customerService.getCustomers()).thenReturn(customerList);
+		List<CustomerDTO> customerResponse = customerList.stream().map(cust -> modelMapper.map(cust, CustomerDTO.class))
+				.collect(Collectors.toList());
+		
+		Mockito.when(customerService.getCustomers()).thenReturn(customerResponse);
 		
 		String URI = "/customers";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get(URI).accept(MediaType.APPLICATION_JSON);
@@ -185,7 +207,10 @@ public class CustomerControllerTest {
 		
 		String URI = "/customers/10";
 		
-		Mockito.when(customerService.getCustomer(10)).thenReturn(mockCustomer);
+		// convert entity to DTO
+		CustomerDTO customerResponse = modelMapper.map(mockCustomer, CustomerDTO.class);
+		
+		Mockito.when(customerService.getCustomer(10)).thenReturn(customerResponse);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(URI)
@@ -216,7 +241,10 @@ public class CustomerControllerTest {
 		
 		String URI = "/customers/15";
 		
-		Mockito.verify(customerService, times(1)).updateCustomer(mockCustomer);
+		// convert entity to DTO
+		CustomerDTO customerResponse = modelMapper.map(mockCustomer, CustomerDTO.class);
+		
+		Mockito.verify(customerService, times(1)).updateCustomer(15, customerResponse);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(URI)

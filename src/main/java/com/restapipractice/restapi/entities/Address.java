@@ -20,7 +20,7 @@ public class Address {
 	
 	private int postal_code;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)//TODO fetchtype lazy
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@MapsId
 	@JoinColumn(name = "customer_id")
 	private Customer customer;

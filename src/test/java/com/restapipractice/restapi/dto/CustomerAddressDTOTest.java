@@ -1,4 +1,4 @@
-package com.restapipractice.restapi.entities;
+package com.restapipractice.restapi.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,64 +14,66 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-public class CustomerAddressTest {
+import com.restapipractice.restapi.entities.Address;
+
+public class CustomerAddressDTOTest {
 	
 	private static final Validator VALIDATOR =
 		      Validation.buildDefaultValidatorFactory().getValidator();
 	
-	private Address customerAddress;
+	private Address address;
 	
 	@BeforeEach
 	void setUp() {
-		customerAddress = new Address();
+		address = new Address();
 	}
 
 	@Test
 	void testAddressCity_ValidCityName() {
-		customerAddress.setCity("Mumbai");
-		testFieldValid(customerAddress, "city");
+		address.setCity("Mumbai");
+		testFieldValid(address, "city");
 	}
 	
 	@ParameterizedTest
 	@NullAndEmptySource
 	@CsvSource({"' '", "'   '"})
 	void testAddressCity_InValidCityName(String city) {
-		customerAddress.setCity(city);
-		testFieldInValid(customerAddress, "city", "No null city allowed");
+		address.setCity(city);
+		testFieldInValid(address, "city", "No null city allowed");
 	}
 	
 	@Test
 	void testAddressCountry_ValidCountryName() {
-		customerAddress.setCountry("India");
-		testFieldValid(customerAddress, "country");
+		address.setCountry("India");
+		testFieldValid(address, "country");
 	}
 	
 	@ParameterizedTest
 	@NullAndEmptySource
 	@CsvSource({"' '", "'   '"})
 	void testAddressCountry_InValidCountryName(String country) {
-		customerAddress.setCountry(country);
-		testFieldInValid(customerAddress, "country", "No null country allowed");
+		address.setCountry(country);
+		testFieldInValid(address, "country", "No null country allowed");
 	}
 	
 	@Test
 	void testAddressPostalCode_ValidPostalCode() {
-		customerAddress.setPostal_code(400085);
-		testFieldValid(customerAddress, "postal_code");
+		address.setPostal_code(400085);
+		testFieldValid(address, "postal_code");
 	}
 	
 	@ParameterizedTest
 	@CsvSource({"-5","-452354"})
 	void testAddressPostalCode_InvalidPostalCode_lessThanLimit(int postal_code) {
-		customerAddress.setPostal_code(postal_code);
-		testFieldInValid(customerAddress, "postal_code", "must be greater than or equal to 1");
+		address.setPostal_code(postal_code);
+		testFieldInValid(address, "postal_code", "must be greater than or equal to 1");
 	}
 	
 	@ParameterizedTest
 	@CsvSource({"1058426","8556242"})
 	void testAddressPostalCode_InvalidPostalCode_greaterThanLimit(int postal_code) {
-		customerAddress.setPostal_code(postal_code);
-		testFieldInValid(customerAddress, "postal_code", "must be less than or equal to 999999");
+		address.setPostal_code(postal_code);
+		testFieldInValid(address, "postal_code", "must be less than or equal to 999999");
 	}
 	
 	

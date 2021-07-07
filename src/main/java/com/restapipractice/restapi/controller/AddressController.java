@@ -38,13 +38,13 @@ public class AddressController {
 	}
 	
 	@PostMapping("/customers/{customerId}/addresses")
-	public ResponseEntity<AddressDTO> addAddress(@PathVariable int customerId, @RequestBody AddressDTO addressDTO){
+	public ResponseEntity<AddressDTO> addAddress(@Valid @PathVariable int customerId, @RequestBody AddressDTO addressDTO){
 		return ResponseEntity.ok().body(this.addressService.updateAddress(customerId, addressDTO));
 	}
 	
 	
 	@PutMapping("/customers/{customerId}/addresses")
-	public ResponseEntity<AddressDTO> updateAddress(@PathVariable int customerId, @RequestBody AddressDTO addressDTO){
+	public ResponseEntity<AddressDTO> updateAddress(@Valid @PathVariable int customerId, @RequestBody AddressDTO addressDTO){
 		return ResponseEntity.ok().body(this.addressService.updateAddress(customerId, addressDTO));
 	}
 	

@@ -31,15 +31,13 @@ public class AddressServiceImplementation implements AddressService{
 	
 	@Override
 	public List<AddressDTO> getAddresses() {
-		//return this.customerAddressDao.findAll();
-
 		List<Address> addresses = customerAddressDao.findAll();
 		if(addresses.isEmpty()) {
 			throw new NoDataFoundException();
 		}else {
 			// convert entity to DTO
-			//AddressDTO addressResponse = modelMapper.map(address, AddressDTO.class);
-			List<AddressDTO> addressResponse = addresses.stream().map(add -> modelMapper.map(add, AddressDTO.class)).collect(Collectors.toList());
+			List<AddressDTO> addressResponse = addresses.stream().map(add -> modelMapper.map(add, AddressDTO.class))
+					.collect(Collectors.toList());
 			return addressResponse;
 		}
 		
@@ -47,37 +45,20 @@ public class AddressServiceImplementation implements AddressService{
 
 	@Override
 	public AddressDTO getAddress(int customerId) {    
-		
-			Optional<Address> address = this.customerAddressDao.findById(customerId);
-			
-			if (address.isPresent()) {
-				
-				// convert entity to DTO
-				AddressDTO addressResponse = modelMapper.map(address, AddressDTO.class);
-				return addressResponse;
-			}else {
-				throw new AddressNotFoundException(customerId);
-			}
+		Optional<Address> address = this.customerAddressDao.findById(customerId);
+		if (address.isPresent()) {
+			// convert entity to DTO
+			AddressDTO addressResponse = modelMapper.map(address, AddressDTO.class);
+			return addressResponse;
+		}else {
+			throw new AddressNotFoundException(customerId);
+		}
 	}
 
 
 	@Override
-	public AddressDTO updateAddress(int customerId, AddressDTO addressDTO) { //TODO change input to address dto, return address
-//		Optional<Customer> customerDb = this.customerDao.findById(customerId);
-//
-//		if (customerDb.isPresent()) {
-//			Customer cust = customerDb.get();
-//			cust.setAddress(address);
-//			customerDao.save(cust);
-//			
-//			// entity to DTO
-//			AddressDTO addressResponse = modelMapper.map(cust, AddressDTO.class);
-//			return addressResponse;
-//			
-//			}else {
-//			 throw new CustomerNotFoundException(customerId);                 
-//		 }
-		
+	public AddressDTO updateAddress(int customerId, AddressDTO addressDTO) { 
+
 		// convert DTO to Entity
 		Address addressRequest = modelMapper.map(addressDTO, Address.class);
 		
@@ -89,7 +70,6 @@ public class AddressServiceImplementation implements AddressService{
 			addressUpdate.setCity(addressRequest.getCity());
 			addressUpdate.setCountry(addressRequest.getCountry());
 			addressUpdate.setPostal_code(addressRequest.getPostal_code());
-			
 			addressUpdate = customerAddressDao.save(addressUpdate);
 			
 			// entity to DTO
