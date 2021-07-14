@@ -4,11 +4,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
-import com.restapipractice.restapi.entities.Address;
-import com.restapipractice.restapi.entities.Customer;
-
-import lombok.Data;
-
 
 public class AddressDTO {
 	

@@ -9,7 +9,7 @@ public interface AddressService {
 	
 	public AddressDTO getAddress(int customerId);
 	
-	//public Customer addAddress(int customerId, Address customerAddress);
+	public AddressDTO addAddress(int customerId, AddressDTO addressDTO);
 	
 	public AddressDTO updateAddress(int customerId, AddressDTO addressDTO);
 	

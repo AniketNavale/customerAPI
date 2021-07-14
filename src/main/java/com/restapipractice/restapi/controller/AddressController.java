@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restapipractice.restapi.dto.AddressDTO;
-import com.restapipractice.restapi.entities.Address;
 import com.restapipractice.restapi.services.AddressService;
 
 @RestController
@@ -39,7 +38,7 @@ public class AddressController {
 	
 	@PostMapping("/customers/{customerId}/addresses")
 	public ResponseEntity<AddressDTO> addAddress(@Valid @PathVariable int customerId, @RequestBody AddressDTO addressDTO){
-		return ResponseEntity.ok().body(this.addressService.updateAddress(customerId, addressDTO));
+		return ResponseEntity.ok().body(this.addressService.addAddress(customerId, addressDTO));
 	}
 	
 	

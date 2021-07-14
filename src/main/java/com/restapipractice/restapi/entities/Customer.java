@@ -24,11 +24,11 @@ public class Customer {
 	
 	private int age;  
 	
-	@OneToOne(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumn
 	private Address address;
 	
-	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<Contact> contact = new ArrayList<>();
 	
 	public Customer(int customer_id, String name, int age, Address address) {

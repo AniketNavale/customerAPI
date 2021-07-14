@@ -36,12 +36,12 @@ public class ContactServiceImplementationTest {
 	@Test
 	@DisplayName("Fetching all contacts from database")
 	public void test_DisplayAllContacts() {
-//		when(customerContactDao.findAll()).thenReturn(Stream.of(new Contact(1,9823564123), new Contact(2,8952146224))
-//				.collect(Collectors.toList()));
-//		when(customerContactDao.findAll()).thenReturn(Stream.of(new Customer(1,"Arihant",28,new Address(1,"Mumbai","India",400052,new Contact(1,9823564123))), 
-//				new Customer(2, "Rakesh", 30,new Address(2,"Shimla","India",400065)))
-//				.collect(Collectors.toList()));
-//		assertEquals(2,contactService.getContacts(1).size());
+		when(customerContactDao.findAll()).thenReturn(Stream.of(new Contact(1,9823564), new Contact(2,8952146))
+				.collect(Collectors.toList()));
+		when(customerContactDao.findAll()).thenReturn(Stream.of(new Customer(1,"Arihant",28,new Address(1,"Mumbai","India",400052,new Contact(1,9823564123))), 
+				new Customer(2, "Rakesh", 30,new Address(2,"Shimla","India",400065)))
+				.collect(Collectors.toList()));
+		assertEquals(2,contactService.getContacts(1).size());
 	}
 	
 	@Test

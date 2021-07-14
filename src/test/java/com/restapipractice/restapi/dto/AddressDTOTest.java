@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import com.restapipractice.restapi.entities.Address;
 
-public class CustomerAddressDTOTest {
+public class AddressDTOTest {
 	
 	private static final Validator VALIDATOR =
 		      Validation.buildDefaultValidatorFactory().getValidator();

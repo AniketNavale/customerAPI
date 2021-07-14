@@ -31,7 +31,7 @@ public class CustomerServiceImplementation implements CustomerService {
 			throw new NoDataFoundException();
 		}else {
 			// convert entity to DTO
-			List<CustomerDTO> customerResponse = customers.stream().map(cust -> modelMapper.map(cust, CustomerDTO.class))
+			List<CustomerDTO> customerResponse = customers.stream().map(customer -> modelMapper.map(customer, CustomerDTO.class))
 					.collect(Collectors.toList());
             return customerResponse;
 		}
@@ -39,10 +39,10 @@ public class CustomerServiceImplementation implements CustomerService {
 
 	@Override
 	public CustomerDTO getCustomer(int customerId) {
-		Optional<Customer> customerDb = this.customerDao.findById(customerId);
-		if(customerDb.isPresent()) {
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
+		if(optionalOfCustomer.isPresent()) {
 			// convert entity to DTO
-			CustomerDTO customerResponse = modelMapper.map(customerDb, CustomerDTO.class);
+			CustomerDTO customerResponse = modelMapper.map(optionalOfCustomer, CustomerDTO.class);
 			return customerResponse;
 		}else {
 			throw new CustomerNotFoundException(customerId);
@@ -66,12 +66,14 @@ public class CustomerServiceImplementation implements CustomerService {
 	@Override
 	public CustomerDTO updateCustomer(int customerId, CustomerDTO customerDTO) {
 		
-		// convert DTO to Entity
-		Customer customerRequest = modelMapper.map(customerDTO, Customer.class);
-		Optional<Customer> customerDb = this.customerDao.findById(customerRequest.getId());
+		
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
 
-		if (customerDb.isPresent()) {
-			Customer customerUpdate = customerDb.get();
+		if (optionalOfCustomer.isPresent()) {
+			// convert DTO to Entity
+			Customer customerRequest = modelMapper.map(customerDTO, Customer.class);
+			
+			Customer customerUpdate = optionalOfCustomer.get();
 			customerUpdate.setId(customerRequest.getId());
 			customerUpdate.setName(customerRequest.getName());
 			customerUpdate.setAge(customerRequest.getAge());
@@ -82,17 +84,17 @@ public class CustomerServiceImplementation implements CustomerService {
 
 			return customerResponse;
 		} else {
-			throw new CustomerNotFoundException(customerRequest.getId());
+			throw new CustomerNotFoundException(customerId);
 		}
 	}
 
 	@Override
 	public void deleteCustomer(int customerId) {
 
-		Optional<Customer> customerDb = this.customerDao.findById(customerId);
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
 
-		if (customerDb.isPresent()) {
-			this.customerDao.delete(customerDb.get());
+		if (optionalOfCustomer.isPresent()) {
+			this.customerDao.delete(optionalOfCustomer.get());
 		} else {
 			throw new CustomerNotFoundException(customerId);
 		}

@@ -36,7 +36,7 @@ public class AddressServiceImplementation implements AddressService{
 			throw new NoDataFoundException();
 		}else {
 			// convert entity to DTO
-			List<AddressDTO> addressResponse = addresses.stream().map(add -> modelMapper.map(add, AddressDTO.class))
+			List<AddressDTO> addressResponse = addresses.stream().map(address -> modelMapper.map(address, AddressDTO.class))
 					.collect(Collectors.toList());
 			return addressResponse;
 		}
@@ -45,54 +45,101 @@ public class AddressServiceImplementation implements AddressService{
 
 	@Override
 	public AddressDTO getAddress(int customerId) {    
-		Optional<Address> address = this.customerAddressDao.findById(customerId);
-		if (address.isPresent()) {
+		Optional<Address> optionalOfAddress = this.customerAddressDao.findById(customerId);
+		if (optionalOfAddress.isPresent()) {
 			// convert entity to DTO
-			AddressDTO addressResponse = modelMapper.map(address, AddressDTO.class);
+			AddressDTO addressResponse = modelMapper.map(optionalOfAddress, AddressDTO.class);
 			return addressResponse;
 		}else {
 			throw new AddressNotFoundException(customerId);
 		}
+	}
+	
+	@Override
+	public AddressDTO addAddress(int customerId, AddressDTO addressDTO) {
+
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
+
+		if (optionalOfCustomer.isPresent()) {
+			// convert DTO to entity
+			Address addressRequest = modelMapper.map(addressDTO, Address.class);
+			addressRequest.setCustomer(optionalOfCustomer.get());
+			addressRequest = customerAddressDao.save(addressRequest);
+
+			// convert entity to DTO
+			AddressDTO addressResponse = modelMapper.map(addressRequest, AddressDTO.class);
+			return addressResponse;
+		} else {
+			throw new CustomerNotFoundException(customerId);
+		}
+
 	}
 
 
 	@Override
 	public AddressDTO updateAddress(int customerId, AddressDTO addressDTO) { 
 
-		// convert DTO to Entity
-		Address addressRequest = modelMapper.map(addressDTO, Address.class);
+//		// convert DTO to Entity
+//		Address addressRequest = modelMapper.map(addressDTO, Address.class);
+//		
+//		Optional<Address> optionalOfAddress = this.customerAddressDao.findById(addressRequest.getCustomer_id());
+//		
+//		
+//		if (optionalOfAddress.isPresent()) {
+//			Address addressUpdate = optionalOfAddress.get();
+//			addressUpdate.setCustomer_id(addressRequest.getCustomer_id());
+//			addressUpdate.setCity(addressRequest.getCity());
+//			addressUpdate.setCountry(addressRequest.getCountry());
+//			addressUpdate.setPostal_code(addressRequest.getPostal_code());
+//			addressUpdate = customerAddressDao.save(addressUpdate);
+//			
+//			// entity to DTO
+//			AddressDTO addressResponse = modelMapper.map(addressUpdate, AddressDTO.class);
+//			return addressResponse;
+//		} else {
+//			throw new AddressNotFoundException(addressRequest.getCustomer_id());
+//		}
 		
-		Optional<Address> addressDb = this.customerAddressDao.findById(addressRequest.getCustomer_id());
-		
-		if (addressDb.isPresent()) {
-			Address addressUpdate = addressDb.get();
-			addressUpdate.setCustomer_id(addressRequest.getCustomer_id());
-			addressUpdate.setCity(addressRequest.getCity());
-			addressUpdate.setCountry(addressRequest.getCountry());
-			addressUpdate.setPostal_code(addressRequest.getPostal_code());
-			addressUpdate = customerAddressDao.save(addressUpdate);
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
+
+		if (optionalOfCustomer.isPresent()) {
+			Optional<Address> optionalOfAddress = this.customerAddressDao.findById(customerId);
+			if (optionalOfAddress.isPresent()) {
+				
+				// convert DTO to Entity
+				Address addressRequest = modelMapper.map(addressDTO, Address.class);
+				
+				Address addressUpdate = optionalOfAddress.get();
+				addressUpdate.setCustomer_id(addressRequest.getCustomer_id());
+				addressUpdate.setCity(addressRequest.getCity());
+				addressUpdate.setCountry(addressRequest.getCountry());
+				addressUpdate.setPostal_code(addressRequest.getPostal_code());
+				addressUpdate = customerAddressDao.save(addressUpdate);
+				
+				// entity to DTO
+				AddressDTO addressResponse = modelMapper.map(addressUpdate, AddressDTO.class);
+				return addressResponse;
+			}else {
+				throw new AddressNotFoundException(customerId);
+			}
 			
-			// entity to DTO
-			AddressDTO addressResponse = modelMapper.map(addressUpdate, AddressDTO.class);
-			return addressResponse;
-		} else {
-			throw new AddressNotFoundException(addressRequest.getCustomer_id());
+		}else {
+			throw new CustomerNotFoundException(customerId);
 		}
+		
 	}
 
-
-	
 	@Override
 	public void deleteAddress(int customerId) { 
-		Optional<Customer> customerDb = this.customerDao.findById(customerId); 
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId); 
 
-		if (customerDb.isPresent()) {
-			Optional<Address> address = customerAddressDao.findById(customerId);
-			  if (address.isPresent()) {
-				customerAddressDao.delete(address.get());
-				Customer cust = customerDb.get();
-				cust.setAddress(null);
-				customerDao.save(cust);
+		if (optionalOfCustomer.isPresent()) {
+			Optional<Address> optionalOfAddress = customerAddressDao.findById(customerId);
+			  if (optionalOfAddress.isPresent()) {
+				customerAddressDao.delete(optionalOfAddress.get());
+				Customer customer = optionalOfCustomer.get();
+				customer.setAddress(null);
+				customerDao.save(customer);
 			}else {
 				throw new AddressNotFoundException(customerId);
 			}

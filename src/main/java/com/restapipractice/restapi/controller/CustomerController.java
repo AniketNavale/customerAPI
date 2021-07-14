@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restapipractice.restapi.dto.CustomerDTO;
-import com.restapipractice.restapi.entities.Customer;
 import com.restapipractice.restapi.services.CustomerService;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 
@@ -26,9 +23,9 @@ import javax.validation.Valid;
 public class CustomerController {
 	
 	//Logger
-	//Logger logger = LoggerFactory.getLogger(CustomerController.class);
+	Logger logger = LoggerFactory.getLogger(CustomerController.class);
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
 
 	
 	private CustomerService customerService;

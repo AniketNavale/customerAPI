@@ -13,7 +13,7 @@ public interface CustomerContactDao extends JpaRepository<Contact, Integer>{
 	//making custom query to fetch only specific customers with that specific customerId
 	
 	@Query(value = "SELECT * FROM CONTACT u WHERE u.customer_id = :customerId", nativeQuery = true)
-	List<Contact> findByCustomerId(@Param("customerId") Integer customerId);
+	List<Contact> findContactsByCustomerId(@Param("customerId") Integer customerId);
 
 	@Query(value = "DELETE FROM CONTACT u  WHERE u.customer_id = :customerId;", nativeQuery = true)
 	void deleteByCustomerId(@Param("customerId") Integer customerId);

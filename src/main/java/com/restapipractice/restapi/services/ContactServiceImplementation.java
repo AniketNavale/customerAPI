@@ -1,6 +1,5 @@
 package com.restapipractice.restapi.services;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,17 +32,15 @@ public class ContactServiceImplementation implements ContactService {
 	@Override
 	public List<ContactDTO> getContacts(int customerId) {
 
-		Optional<Customer> customerDb = this.customerDao.findById(customerId);
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
 
-		if (customerDb.isPresent()) {
-			List<Contact> contacts = customerContactDao.findByCustomerId(customerId); // TODO here fetch specific
-																						// customer all contacts from
-																						// DAO
-			if (contacts.isEmpty()) { // make new method in DAO
+		if (optionalOfCustomer.isPresent()) {
+			List<Contact> contacts = customerContactDao.findContactsByCustomerId(customerId); //custom query from contactDao
+			if (contacts.isEmpty()) {
 				throw new ContactNotFoundException(customerId);
 			} else {
 				// convert entity to DTO
-				List<ContactDTO> contactResponse = contacts.stream().map(con -> modelMapper.map(con, ContactDTO.class))
+				List<ContactDTO> contactResponse = contacts.stream().map(contact -> modelMapper.map(contact, ContactDTO.class))
 						.collect(Collectors.toList());
 				return contactResponse;
 			}
@@ -54,48 +51,25 @@ public class ContactServiceImplementation implements ContactService {
 
 	@Override
 	public ContactDTO getContact(int customerId, int contactId) {
-
-//		Optional<Customer> customerDb = this.customerDao.findById(customerId);
-//	
-//		if(customerDb.isPresent()) {
-//			Optional<Contact> contactDb = this.customerContactDao.findById(contactId); //TODO call getContacts() and find contactId
-//			if(contactDb.isPresent()) {
-//				// convert entity to DTO
-//				ContactDTO contactResponse = modelMapper.map(contactDb, ContactDTO.class);
-//				return contactResponse;
-//			}else {
-//				throw new ContactNotFoundException(customerId);
-//			}
-//		}else {
-//			throw new CustomerNotFoundException(customerId);
-//		}
-
-		Optional<Customer> customerDb = this.customerDao.findById(customerId);
-
-		if (customerDb.isPresent()) {
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
+		if (optionalOfCustomer.isPresent()) {
 			List<ContactDTO> allContactsOfThatCustomer = getContacts(customerId);
-			// convert DTO to entity
-			List<Contact> contactlist = allContactsOfThatCustomer.stream()
-					.map(con -> modelMapper.map(con, Contact.class)).collect(Collectors.toList());
-               //TODO remove dto to entity mapping, stream.filter.findfirst orelse throw exception
-			// Iterator
-			Iterator<Contact> it = contactlist.iterator();
-			while (it.hasNext()) {
-
-			}
-
+			return allContactsOfThatCustomer.stream().filter(contact -> contact.getContactId() == contactId).findFirst()
+					.orElseThrow(() -> new ContactNotFoundException(customerId));
+		} else {
+			throw new CustomerNotFoundException(customerId);
 		}
 	}
 
 	@Override
 	public ContactDTO addContact(int customerId, ContactDTO contactDTO) {
 
-		Optional<Customer> customerDb = this.customerDao.findById(customerId);
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
 
-		if (customerDb.isPresent()) {
+		if (optionalOfCustomer.isPresent()) {
 			// convert DTO to entity
 			Contact contactRequest = modelMapper.map(contactDTO, Contact.class);// TODO set customerId
-            contactRequest.setCustomer(customerDb.get());
+			contactRequest.setCustomer(optionalOfCustomer.get());
 			contactRequest = customerContactDao.save(contactRequest);
 
 			// convert entity to DTO
@@ -110,39 +84,40 @@ public class ContactServiceImplementation implements ContactService {
 	@Override
 	public ContactDTO updateContact(int customerId, int contactId, ContactDTO contactDTO) {
 
-		Optional<Customer> customerDb = this.customerDao.findById(customerId);
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
 
-		if (customerDb.isPresent()) {
-			Optional<Contact> contactDb = this.customerContactDao.findById(contactId); // TODO call getContacts()
+		if (optionalOfCustomer.isPresent()) {
+			Optional<Contact> optionalOfcontact = this.customerContactDao.findById(contactId);
+			
+			// convert DTO to Entity
+			Contact contactRequest = modelMapper.map(contactDTO, Contact.class);
 
-			if (contactDb.isPresent()) {
-				// convert DTO to Entity
-				Contact contactRequest = modelMapper.map(contactDTO, Contact.class);
-
-				Optional<Contact> con = this.customerContactDao.findById(contactRequest.getContactId());
-
-				Contact contactUpdate = con.get();
-				contactUpdate.setContactId(contactRequest.getContactId());
+			if (optionalOfcontact.isPresent() && optionalOfcontact.get().getCustomer().getId() == customerId) {
+				//TODO add check, inside of optionalofcontact, customerId same as input customerID
+				
+				Contact contactUpdate = optionalOfcontact.get();
 				contactUpdate.setContactNumber(contactRequest.getContactNumber());
-
 				contactUpdate = customerContactDao.save(contactUpdate);
 
 				// entity to DTO
 				ContactDTO contactResponse = modelMapper.map(contactUpdate, ContactDTO.class);
 				return contactResponse;
+				
+				
 			} else {
 				throw new ContactNotFoundException(customerId);
 			}
 		} else {
 			throw new CustomerNotFoundException(customerId);
 		}
+		
 	}
 
 	@Override
 	public void deleteAllContactsOfSpecificCustomer(int customerId) {
-		Optional<Customer> customerDb = this.customerDao.findById(customerId);// TODO variable name
-		if (customerDb.isPresent()) {
-			customerContactDao.deleteByCustomerId(customerId);
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
+		if (optionalOfCustomer.isPresent()) {
+			customerContactDao.deleteByCustomerId(customerId); //custom query from contactDao
 		} else {
 			throw new CustomerNotFoundException(customerId);
 		}
@@ -151,17 +126,18 @@ public class ContactServiceImplementation implements ContactService {
 	@Override
 	public void deleteSpecificContactOfSpecificCustomer(int customerId, int contactId) {
 
-		Optional<Customer> customerDb = this.customerDao.findById(customerId);
-		if (customerDb.isPresent()) {
-			Optional<Contact> contactDb = this.customerContactDao.findById(contactId); 
+		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
+		if (optionalOfCustomer.isPresent()) {
+			Optional<Contact> optionalOfcontact = this.customerContactDao.findById(contactId);
 
-			if (contactDb.isPresent()) {//TODO check whether the contact is mapped to that customerID only 
-
-				customerContactDao.delete(contactDb.get());
-				Customer cust = customerDb.get();
-				cust.setContact(null);
-				customerDao.save(cust);
-
+			if (optionalOfcontact.isPresent()) {// TODO check whether the contact is mapped to that customerID only
+				
+				if(optionalOfcontact.get().getCustomer().getId() == customerId) {
+					customerContactDao.delete(optionalOfcontact.get());
+					Customer customer = optionalOfCustomer.get();
+					customer.setContact(null);
+					customerDao.save(customer);
+				}
 			} else {
 				throw new ContactNotFoundException(customerId);
 			}
@@ -169,5 +145,4 @@ public class ContactServiceImplementation implements ContactService {
 			throw new CustomerNotFoundException(customerId);
 		}
 	}
-
 }
