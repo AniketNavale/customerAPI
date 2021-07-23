@@ -68,9 +68,10 @@ public class ContactServiceImplementationTest {
 	@Test
 	@DisplayName("Deleting specific contact of specific customer from the database")
 	public void test_DeleteSpecificContactOfSpecificCustomer() {
+		Optional<Customer> customer = Optional.of(new Customer(1,"Arihant",28,"normal"));
 		Optional<Contact> contact = Optional.of(new Contact(1,521456264));
 		when(customerContactDao.findById(1)).thenReturn(contact);
-		contactService.deleteSpecificContactOfSpecificCustomer(1);                 
+		contactService.deleteSpecificContactOfSpecificCustomer(1,1);                 
 		ArgumentCaptor<Contact> contactCaptor = ArgumentCaptor.forClass(Contact.class);
 		Mockito.verify(customerContactDao, times(1)).delete(contactCaptor.capture());
 		assertEquals(1, contactCaptor.getValue().getContactId());

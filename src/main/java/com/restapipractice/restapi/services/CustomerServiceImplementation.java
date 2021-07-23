@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restapipractice.restapi.dao.CustomerDao;
@@ -23,6 +24,9 @@ public class CustomerServiceImplementation implements CustomerService {
 		this.customerDao = customerDao;
 		this.modelMapper = modelMapper;
 	}
+	
+	@Autowired
+	private FeignInterface feignInterface;
 
 	@Override
 	public List<CustomerDTO> getCustomers() {
@@ -41,10 +45,15 @@ public class CustomerServiceImplementation implements CustomerService {
 	public CustomerDTO getCustomer(int customerId) {
 		Optional<Customer> optionalOfCustomer = this.customerDao.findById(customerId);
 		if(optionalOfCustomer.isPresent()) {
-			// convert entity to DTO
-			CustomerDTO customerResponse = modelMapper.map(optionalOfCustomer, CustomerDTO.class);
-			return customerResponse;
-		}else {
+//			// convert entity to DTO
+//			CustomerDTO customerResponse = modelMapper.map(optionalOfCustomer, CustomerDTO.class);
+//			return customerResponse;
+			
+			List<CustomerDTO> allCustomers = getCustomers();
+			return allCustomers.stream().filter(customer -> customer.getId() == customerId).findFirst()
+					.orElseThrow(() -> new CustomerNotFoundException(customerId));
+		}
+		else {
 			throw new CustomerNotFoundException(customerId);
 		}
 	}
@@ -56,6 +65,9 @@ public class CustomerServiceImplementation implements CustomerService {
 		// convert DTO to entity
 		Customer customerRequest = modelMapper.map(customerDTO, Customer.class);
 		
+		//feign client
+		String value = feignInterface.getCustomerTypeFeign();
+		customerRequest.setCustomerType(value);
 		customerRequest = customerDao.save(customerRequest);
 		// convert entity to DTO
 		CustomerDTO customerResponse = modelMapper.map(customerRequest,CustomerDTO.class);

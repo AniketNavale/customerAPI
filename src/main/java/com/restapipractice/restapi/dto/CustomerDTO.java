@@ -16,14 +16,18 @@ public class CustomerDTO {
 	@Max(110)
 	private int age; 
 	
+	//for feignApplication
+	private String customerType;
 	
 	
 	
-	public CustomerDTO(int customer_id, String name, int age) {
+	
+	public CustomerDTO(int customer_id, String name, int age,  String customerType) {
 		super();
 		this.customer_id = customer_id;
 		this.name = name;
 		this.age = age;
+		this.customerType = customerType;
 	}
 	
 	
@@ -59,6 +63,15 @@ public class CustomerDTO {
 		this.age = age;
 	}
 
+	
+	public String getCustomerType() {
+		return customerType;
+	}
+
+	public void setCustomerType(String customerType) {
+		this.customerType = customerType;
+	}
+	
 	@Override
 	public String toString() {
 		return "Customer [customer_id=" + customer_id + ", name=" + name + ", age=" + age + "]";

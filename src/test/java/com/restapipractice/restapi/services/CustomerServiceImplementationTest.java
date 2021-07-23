@@ -41,7 +41,8 @@ public class CustomerServiceImplementationTest {
 	@Test
 	@DisplayName("Fetching all customers from database")
 	public void test_DisplayAllCustomers() {
-		when(customerDao.findAll()).thenReturn(Stream.of(new Customer(1,"Arihant",28,new Address(1,"Mumbai","India",400052)), new Customer(2, "Rakesh", 30,new Address(2,"Shimla","India",400065)))
+		when(customerDao.findAll()).thenReturn(Stream.of(new Customer(1,"Arihant",28,"normal"), 
+				new Customer(2, "Rakesh", 30,"normal"))
 				.collect(Collectors.toList()));
 		assertEquals(2,customerService.getCustomers().size());
 	}
@@ -49,7 +50,7 @@ public class CustomerServiceImplementationTest {
 	@Test
 	@DisplayName("Fetching a single customer from database")
 	public void test_DisplaySpecificCustomer() {
-		Optional<Customer> customer = Optional.of(new Customer(2,"Hardik",45,new Address(1,"Mumbai","India",400052)));
+		Optional<Customer> customer = Optional.of(new Customer(2,"Hardik",45,"normal"));
 		when(customerDao.findById(2)).thenReturn(customer);
 		assertEquals(customer, customerDao.findById(2));
 	}
@@ -57,7 +58,7 @@ public class CustomerServiceImplementationTest {
 	@Test
 	@DisplayName("Adding a new customer in database")
 	public void test_AddCustomer_addNewCustomerInDatabase() {
-  		Customer customer = new Customer(5,"Sachin",32,new Address(1,"Mumbai","India",400052));
+  		Customer customer = new Customer(5,"Sachin",32,"normal");
 		customerDao.save(customer);
 		ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class); 
 		Mockito.verify(customerDao, times(1)).save(customerCaptor.capture());
@@ -66,7 +67,7 @@ public class CustomerServiceImplementationTest {
 	@Test
 	@DisplayName("Updating existing customer in database")
 	public void test_UpdateCustomer_updateExistingCustomerInDatabase() {
-		Customer customer = new Customer(5,"Sachin",32,new Address(1,"Mumbai","India",400052));
+		Customer customer = new Customer(5,"Sachin",32,"normal");
 		customerDao.save(customer);
 		ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class); 
 		Mockito.verify(customerDao, times(1)).save(customerCaptor.capture());
@@ -79,7 +80,7 @@ public class CustomerServiceImplementationTest {
 	@Test
 	@DisplayName("Deleting customer from the database if it is present")
 	public void test_DeleteCustomer_ifCustomerIsPresentInDatabase() {
-		Optional<Customer> customer = Optional.of(new Customer(5,"Sachin",32,new Address(1,"Mumbai","India",400052)));
+		Optional<Customer> customer = Optional.of(new Customer(5,"Sachin",32,"normal"));
 		when(customerDao.findById(5)).thenReturn(customer);
 		customerService.deleteCustomer(5);                 
 		ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class);
@@ -92,7 +93,7 @@ public class CustomerServiceImplementationTest {
 	@Test
 	@DisplayName("Deleting customer from the database if it is not present")
 	public void test_DeleteCustomer_ifCustomerIsNotPresentInDatabase() {
-		Optional<Customer> customer = Optional.of(new Customer(5,"Sachin",32,new Address(1,"Mumbai","India",400052)));
+		Optional<Customer> customer = Optional.of(new Customer(5,"Sachin",32,"normal"));
 		when(customerDao.findById(5)).thenReturn(customer);
 		customerService.deleteCustomer(15); 
 		ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class);

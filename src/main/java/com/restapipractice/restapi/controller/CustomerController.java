@@ -36,7 +36,7 @@ public class CustomerController {
 	
 	
 	/**
-	 * GET method to get details of all the customer.
+	 * GET method to get details of all customers.
 	 * 
 	 * @param No parameters
 	 * @return  returns all customers present
@@ -47,15 +47,9 @@ public class CustomerController {
 		return ResponseEntity.ok().body(customerService.getCustomers());
 	}
 	
-//	@GetMapping("/customers")
-//	public List<CustomerDTO> getCustomers() {
-//
-//		return customerService.getCustomers().stream().map(customer -> modelMapper.map(customer, CustomerDTO.class))
-//				.collect(Collectors.toList());
-//	}
 	
 	/**
-	 * GET method to get details of the customer whose Id is passed as Request Param.(Ex: /customers/{customerId} )
+	 * GET method to get details of a single customer
 	 * 
 	 * @param customer Id
 	 * @return only one customer with specified customer Id
@@ -68,9 +62,9 @@ public class CustomerController {
 	
 	
 	/**
-	 * POST method to add a customer and return the customer id generated for the customer.
+	 * POST method to add a new customer
 	 * 
-	 * @param customer object
+	 * @param CustomerDTO
 	 * @return newly added customer
 	 * @author Aniket Navale
 	 */
@@ -81,9 +75,10 @@ public class CustomerController {
 	
 	
 	/**
-	 * PUT method to update details of a given customer specified by customer id in request param.
+	 * PUT method to update details of a given customer
 	 * 
-	 * @param customer object
+	 * @param customerId
+	 * @param CustomerDTO
 	 * @return newly updated customer
 	 * @author Aniket Navale
 	 */

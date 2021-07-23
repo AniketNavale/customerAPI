@@ -27,13 +27,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restapipractice.restapi.dto.AddressDTO;
-import com.restapipractice.restapi.dto.CustomerDTO;
 import com.restapipractice.restapi.entities.Address;
-import com.restapipractice.restapi.entities.Customer;
 import com.restapipractice.restapi.services.AddressService;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(CustomerController.class)
+@WebMvcTest(AddressController.class)
 public class AddressControllerTest {
 
 	@Autowired
@@ -63,7 +61,7 @@ public class AddressControllerTest {
 		// convert entity to DTO
 		AddressDTO addressResponse = modelMapper.map(mockAddress, AddressDTO.class);
 		
-		Mockito.when(addressService.addAddress(20,addressResponse).thenReturn(addressResponse);
+		Mockito.when(addressService.addAddress(20,addressResponse)).thenReturn(addressResponse);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(URI)
@@ -98,7 +96,7 @@ public class AddressControllerTest {
 		// convert entity to DTO
 		AddressDTO addressResponse = modelMapper.map(mockAddress, AddressDTO.class);
 				
-		Mockito.when(addressService.addAddress(20,addressResponse).thenReturn(addressResponse);
+		Mockito.when(addressService.addAddress(20,addressResponse)).thenReturn(addressResponse);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(URI)
@@ -131,7 +129,7 @@ public class AddressControllerTest {
 		// convert entity to DTO
 		AddressDTO addressResponse = modelMapper.map(mockAddress, AddressDTO.class);
 				
-		Mockito.when(addressService.addAddress(20,addressResponse).thenReturn(addressResponse);
+		Mockito.when(addressService.addAddress(20,addressResponse)).thenReturn(addressResponse);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(URI)
@@ -163,7 +161,7 @@ public class AddressControllerTest {
 		// convert entity to DTO
 		AddressDTO addressResponse = modelMapper.map(mockAddress, AddressDTO.class);
 				
-		Mockito.when(addressService.addAddress(20,addressResponse).thenReturn(addressResponse);
+		Mockito.when(addressService.addAddress(20,addressResponse)).thenReturn(addressResponse);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(URI)

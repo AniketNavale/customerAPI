@@ -68,7 +68,7 @@ public class ContactServiceImplementation implements ContactService {
 
 		if (optionalOfCustomer.isPresent()) {
 			// convert DTO to entity
-			Contact contactRequest = modelMapper.map(contactDTO, Contact.class);// TODO set customerId
+			Contact contactRequest = modelMapper.map(contactDTO, Contact.class);
 			contactRequest.setCustomer(optionalOfCustomer.get());
 			contactRequest = customerContactDao.save(contactRequest);
 
@@ -93,7 +93,7 @@ public class ContactServiceImplementation implements ContactService {
 			Contact contactRequest = modelMapper.map(contactDTO, Contact.class);
 
 			if (optionalOfcontact.isPresent() && optionalOfcontact.get().getCustomer().getId() == customerId) {
-				//TODO add check, inside of optionalofcontact, customerId same as input customerID
+				
 				
 				Contact contactUpdate = optionalOfcontact.get();
 				contactUpdate.setContactNumber(contactRequest.getContactNumber());
@@ -130,7 +130,7 @@ public class ContactServiceImplementation implements ContactService {
 		if (optionalOfCustomer.isPresent()) {
 			Optional<Contact> optionalOfcontact = this.customerContactDao.findById(contactId);
 
-			if (optionalOfcontact.isPresent()) {// TODO check whether the contact is mapped to that customerID only
+			if (optionalOfcontact.isPresent()) {
 				
 				if(optionalOfcontact.get().getCustomer().getId() == customerId) {
 					customerContactDao.delete(optionalOfcontact.get());

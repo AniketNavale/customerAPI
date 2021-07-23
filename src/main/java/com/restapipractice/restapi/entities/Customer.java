@@ -24,6 +24,11 @@ public class Customer {
 	
 	private int age;  
 	
+	//for feignApplication
+	private String customerType;
+	
+	
+
 	@OneToOne(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumn
 	private Address address;
@@ -31,13 +36,13 @@ public class Customer {
 	@OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<Contact> contact = new ArrayList<>();
 	
-	public Customer(int customer_id, String name, int age, Address address) {
+	public Customer(int customer_id, String name, int age, String customerType) {
 		
 		super();
 		this.customer_id = customer_id;
 		this.name = name;
 		this.age = age;
-		this.address = address;
+		this.customerType = customerType;
 	}
 
 	//Default Constructor
@@ -67,6 +72,14 @@ public class Customer {
 
 	public void setAge(int age) {
 		this.age = age;
+	}
+	
+	public String getCustomerType() {
+		return customerType;
+	}
+
+	public void setCustomerType(String customerType) {
+		this.customerType = customerType;
 	}
 
 	@Override

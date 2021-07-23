@@ -47,9 +47,13 @@ public class AddressServiceImplementation implements AddressService{
 	public AddressDTO getAddress(int customerId) {    
 		Optional<Address> optionalOfAddress = this.customerAddressDao.findById(customerId);
 		if (optionalOfAddress.isPresent()) {
-			// convert entity to DTO
-			AddressDTO addressResponse = modelMapper.map(optionalOfAddress, AddressDTO.class);
-			return addressResponse;
+//			// convert entity to DTO
+//			AddressDTO addressResponse = modelMapper.map(optionalOfAddress, AddressDTO.class);
+//			return addressResponse;
+			
+			List<AddressDTO> allAddresses = getAddresses();
+			return allAddresses.stream().filter(address -> address.getCustomer_id() == customerId).findFirst()
+					.orElseThrow(() -> new AddressNotFoundException(customerId));
 		}else {
 			throw new AddressNotFoundException(customerId);
 		}
